@@ -44,7 +44,6 @@ def extract_text_from_ppt(ppt_path):
     except Exception as e:
         return f"오류: 파일을 처리하는 중 문제가 발생했습니다.\n{e}"
 
-
 def save_text_to_file(text_content, original_file_path, output_dir):
     """추출된 텍스트를 파일로 저장하는 함수"""
     
