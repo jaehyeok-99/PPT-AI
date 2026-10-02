@@ -12,42 +12,7 @@ PowerPoint 파일의 텍스트를 추출해 로컬 LLM으로 발표용 요약을
 
 아래 구성은 업로드 화면인 [app.py](./app.py)를 기준으로 합니다. 브라우저 UI와 Python 앱, 로컬 모델 서버, 음성 엔진의 역할을 구분했습니다.
 
-```mermaid
-flowchart TB
-    browser["브라우저 · Streamlit UI"]
-    subgraph local["로컬 실행 환경"]
-        direction TB
-        subgraph app["Python 앱 · app.py"]
-            upload["PPTX 업로드"]
-            extract["python-pptx<br/>슬라이드·표 텍스트 추출"]
-            prompt["발표 스크립트 프롬프트"]
-            summary["요약 후처리<br/>마크다운 기호 제거"]
-            tts["pyttsx3<br/>음성 파일 생성"]
-        end
-        model["Ollama · Llama 3.1 8B<br/>localhost:11435"]
-        voice["운영체제 TTS 엔진"]
-        output[("output/<br/>음성 파일")]
-    end
-
-    browser -->|"PPTX"| upload
-    upload --> extract --> prompt
-    prompt -->|"requests · POST /api/chat"| model
-    model -->|"요약 텍스트"| summary
-    summary -->|"화면 표시"| browser
-    summary --> tts
-    tts --> voice
-    voice -->|"파일 저장"| output
-    output -->|"Streamlit 오디오 재생"| browser
-
-    classDef ui fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
-    classDef process fill:#f1f5f9,stroke:#64748b,color:#0f172a
-    classDef service fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
-    classDef storage fill:#dcfce7,stroke:#16a34a,color:#14532d
-    class browser ui
-    class upload,extract,prompt,summary,tts process
-    class model,voice service
-    class output storage
-```
+![프로젝트 아키텍처](./docs/images/architecture.png)
 
 요약 요청은 코드에 지정된 로컬 Ollama 서버로 전달합니다. 음성 파일의 .mp3 확장자와 실제 인코딩 일치 여부는 실행 환경에서 확인해야 합니다.
 
